@@ -1,14 +1,19 @@
 package com.github.controller;
 
+import com.auth0.jwt.JWT;
 import com.github.pojo.Result;
 import com.github.pojo.User;
 import com.github.service.UserService;
+import com.github.utils.JwtUtil;
 import com.github.utils.Md5Util;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author qyh
@@ -42,6 +47,7 @@ public class UserController {
         }
     }
 
+    //登录接口
     @PostMapping("/login")
     public Result<String> login(@Pattern (regexp = "^\\S{5,16}$") @RequestParam("username")String username,
                         @Pattern (regexp = "^\\S{5,16}$") @RequestParam("password") String password){
@@ -53,7 +59,11 @@ public class UserController {
 
         //判断密码是否正确
         if(Md5Util.getMD5String(password).equals(user.getPassword())){
-            return Result.success("jwt token");
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("id", user.getId());
+            claims.put("username", user.getUsername());
+            String token = JwtUtil.genToken(claims);
+            return Result.success(token);
         }
 
         return Result.error("密码有误");
