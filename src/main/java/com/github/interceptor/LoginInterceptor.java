@@ -1,6 +1,7 @@
 package com.github.interceptor;
 
 import com.github.utils.JwtUtil;
+import com.github.utils.ThreadLocalUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -22,11 +23,19 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String authorization = request.getHeader("Authorization");
         try {
-            JwtUtil.parseToken(authorization);
+            Map<String, Object> claims = JwtUtil.parseToken(authorization);
+            //保存用户名到ThreadLocal
+            ThreadLocalUtil.set(claims);
             return true;
         }catch (Exception e){
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return false;
         }
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        //清空ThreadLocal的数据
+        ThreadLocalUtil.remove();
     }
 }
