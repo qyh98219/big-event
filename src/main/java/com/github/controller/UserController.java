@@ -1,11 +1,13 @@
 package com.github.controller;
 
 import com.auth0.jwt.JWT;
+import com.github.mapstruct.UserMapper;
 import com.github.pojo.Result;
 import com.github.pojo.User;
 import com.github.service.UserService;
 import com.github.utils.JwtUtil;
 import com.github.utils.Md5Util;
+import com.github.vo.UserVO;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -67,5 +69,14 @@ public class UserController {
         }
 
         return Result.error("密码有误");
+    }
+
+    @GetMapping("/userInfo")
+    public Result<UserVO> userInfo(@RequestHeader("Authorization")String token){
+        Map<String, Object> claims = JwtUtil.parseToken(token);
+        String username = claims.get("username").toString();
+        User user = userService.findByUserName(username);
+        UserVO userVO = UserMapper.INSTANCE.userToUserVO(user);
+        return Result.success(userVO);
     }
 }
