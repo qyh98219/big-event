@@ -16,4 +16,10 @@ public interface UserMapper {
 
     @Update("update user set nickname=#{user.nickname}, email=#{user.email}, update_time=now() where id = #{user.id}")
     void update(@Param("user")User user);
+
+    @Update("update user set user_pic = #{avatarUrl}, update_time = now() where id = #{id}")
+    void updateAvatar(@Param("id")Integer id, @Param("avatarUrl")String avatarUrl);
+
+    @Update("update user set password = #{password}, update_time= now() where id = #{id}")
+    void updatePwd(@Param("id")Integer id, @Param("password") String password);
 }

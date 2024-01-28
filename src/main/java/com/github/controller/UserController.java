@@ -7,9 +7,12 @@ import com.github.service.UserService;
 import com.github.utils.JwtUtil;
 import com.github.utils.Md5Util;
 import com.github.utils.ThreadLocalUtil;
+import com.github.vo.UpdateDataVO;
 import com.github.vo.UserVO;
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -84,4 +87,35 @@ public class UserController {
         userService.update(user);
         return Result.success();
     }
+
+    @PatchMapping("/updateAvatar")
+    public Result updateAvatar(@RequestParam("avatarUrl")@URL() String avatarUrl){
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer id = (Integer) claims.get("id");
+        userService.updateAvatar(id, avatarUrl);
+        return Result.success();
+    }
+
+    @PatchMapping("/updatePwd")
+    public Result updatePwd(@RequestBody UpdateDataVO updateDataVO){
+        if(!StringUtils.hasLength(updateDataVO.getOldPwd()) && !StringUtils.hasLength(updateDataVO.getNewPwd()) && !StringUtils.hasLength(updateDataVO.getRePwd())){
+            return Result.error("缺少必要参数");
+        }
+
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer id = (Integer) claims.get("id");
+        String username = claims.get("username").toString();
+        User user = userService.findByUserName(username);
+        String encodeOldPwd = Md5Util.getMD5String(updateDataVO.getOldPwd());
+        if (!user.getPassword().equalsIgnoreCase(encodeOldPwd)){
+            return Result.error("旧密码不一致");
+        }
+        if(!updateDataVO.getNewPwd().equals(updateDataVO.getRePwd())){
+            return Result.error("两次密码不一致");
+        }
+
+        userService.updatePwd(id, updateDataVO.getNewPwd());
+        return Result.success();
+    }
+
 }
