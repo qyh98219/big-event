@@ -70,12 +70,18 @@ public class UserController {
         return Result.error("密码有误");
     }
 
-    @GetMapping("/userInfo")
+    @GetMapping("/info")
     public Result<UserVO> userInfo(){
         Map<String,Object> claims = ThreadLocalUtil.get();
         String username = claims.get("username").toString();
         User user = userService.findByUserName(username);
         UserVO userVO = UserMapper.INSTANCE.userToUserVO(user);
         return Result.success(userVO);
+    }
+
+    @PutMapping("/update")
+    public Result updateInfo(@RequestBody @Validated User user){
+        userService.update(user);
+        return Result.success();
     }
 }

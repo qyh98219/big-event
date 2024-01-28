@@ -4,6 +4,7 @@ import com.github.pojo.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 public interface UserMapper {
     @Select("select * from user where username = #{username}")
@@ -12,4 +13,7 @@ public interface UserMapper {
     @Insert("insert into user(username, password, create_time, update_time) " +
             "values(#{username}, #{password}, now(), now())")
     void add(@Param("username") String username, @Param("password") String password);
+
+    @Update("update user set nickname=#{user.nickname}, email=#{user.email}, update_time=now() where id = #{user.id}")
+    void update(@Param("user")User user);
 }

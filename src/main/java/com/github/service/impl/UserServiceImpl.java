@@ -35,4 +35,9 @@ public class UserServiceImpl implements UserService {
         //注册
         userMapper.add(username, md5Password);
     }
+
+    @Override
+    public void update(User user) {
+        userMapper.update(user);
+    }
 }
