@@ -4,6 +4,7 @@ import com.github.pojo.Category;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -18,4 +19,7 @@ public interface CategoryMapper {
 
     @Select("select * from category where id = #{id}")
     Category findCategoryById(@Param("id") Integer id);
+
+    @Update("update category set category_name = #{category.categoryName}, category_alias=#{category.categoryAlias}, update_time=now() where id = #{category.id}")
+    void update(@Param("category") Category category);
 }

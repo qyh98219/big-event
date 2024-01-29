@@ -10,4 +10,6 @@ public interface CategoryService {
     List<Category> list(Integer createUser);
 
     Category detail(Integer id);
+
+    void update(Category category);
 }

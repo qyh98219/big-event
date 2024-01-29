@@ -98,7 +98,7 @@ public class UserController {
 
     @PatchMapping("/updatePwd")
     public Result updatePwd(@RequestBody UpdateDataVO updateDataVO){
-        if(!StringUtils.hasLength(updateDataVO.getOldPwd()) && !StringUtils.hasLength(updateDataVO.getNewPwd()) && !StringUtils.hasLength(updateDataVO.getRePwd())){
+        if(!StringUtils.hasLength(updateDataVO.getOldPwd()) || !StringUtils.hasLength(updateDataVO.getNewPwd()) && !StringUtils.hasLength(updateDataVO.getRePwd())){
             return Result.error("缺少必要参数");
         }
 

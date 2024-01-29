@@ -7,6 +7,7 @@ import com.github.service.impl.CategoryServiceImpl;
 import com.github.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class CategoryController {
 
     @PostMapping("/add")
     public Result add(@RequestBody Category category){
-        if(!StringUtils.hasLength(category.getCategoryName()) && !StringUtils.hasLength(category.getCategoryAlias())){
+        if(!StringUtils.hasLength(category.getCategoryName()) || !StringUtils.hasLength(category.getCategoryAlias())){
             return Result.error("缺乏必要参数");
         }
 
@@ -60,5 +61,12 @@ public class CategoryController {
     public Result<Category> detail(@RequestParam("id") Integer id){
         Category detail = categoryService.detail(id);
         return Result.success(detail);
+    }
+
+    @PutMapping("/update")
+    public Result update(@RequestBody @Validated Category category){
+
+        categoryService.update(category);
+        return Result.success();
     }
 }
