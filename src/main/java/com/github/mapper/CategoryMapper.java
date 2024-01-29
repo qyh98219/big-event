@@ -1,10 +1,7 @@
 package com.github.mapper;
 
 import com.github.pojo.Category;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -22,4 +19,7 @@ public interface CategoryMapper {
 
     @Update("update category set category_name = #{category.categoryName}, category_alias=#{category.categoryAlias}, update_time=now() where id = #{category.id}")
     void update(@Param("category") Category category);
+
+    @Delete("delete from category where id = #{id}")
+    void delete(@Param("id") Integer id);
 }
