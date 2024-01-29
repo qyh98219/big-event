@@ -7,11 +7,9 @@ import com.github.service.impl.CategoryServiceImpl;
 import com.github.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +31,7 @@ public class CategoryController {
     }
 
     @PostMapping("/add")
-    public Result addCategory(@RequestBody Category category){
+    public Result add(@RequestBody Category category){
         if(!StringUtils.hasLength(category.getCategoryName()) && !StringUtils.hasLength(category.getCategoryAlias())){
             return Result.error("缺乏必要参数");
         }
@@ -43,5 +41,18 @@ public class CategoryController {
         category.setCreateUser(id);
         categoryService.add(category);
         return Result.success();
+    }
+
+    @GetMapping("/list")
+    public Result<List<Category>> list(){
+        Map<String,Object> claims = ThreadLocalUtil.get();
+        Integer id = (Integer) claims.get("id");
+
+        List<Category> categories = categoryService.list(id);
+        if (categories.isEmpty()){
+            return Result.error("出现未知错误");
+        }
+
+        return Result.success(categories);
     }
 }
