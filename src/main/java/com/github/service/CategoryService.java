@@ -8,4 +8,6 @@ public interface CategoryService {
     void add(Category category);
 
     List<Category> list(Integer createUser);
+
+    Category detail(Integer id);
 }

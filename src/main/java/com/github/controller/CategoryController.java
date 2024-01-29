@@ -46,13 +46,19 @@ public class CategoryController {
     @GetMapping("/list")
     public Result<List<Category>> list(){
         Map<String,Object> claims = ThreadLocalUtil.get();
-        Integer id = (Integer) claims.get("id");
+        Integer userId = (Integer) claims.get("id");
 
-        List<Category> categories = categoryService.list(id);
+        List<Category> categories = categoryService.list(userId);
         if (categories.isEmpty()){
             return Result.error("出现未知错误");
         }
 
         return Result.success(categories);
+    }
+
+    @GetMapping("/detail")
+    public Result<Category> detail(@RequestParam("id") Integer id){
+        Category detail = categoryService.detail(id);
+        return Result.success(detail);
     }
 }

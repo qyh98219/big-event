@@ -15,4 +15,7 @@ public interface CategoryMapper {
 
     @Select("select * from category where create_user = #{createUser}")
     List<Category> list(@Param("createUser") Integer createUser);
+
+    @Select("select * from category where id = #{id}")
+    Category findCategoryById(@Param("id") Integer id);
 }
