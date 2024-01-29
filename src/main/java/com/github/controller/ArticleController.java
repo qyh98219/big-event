@@ -1,13 +1,12 @@
 package com.github.controller;
 
+import com.github.pojo.Article;
 import com.github.pojo.Result;
-import com.github.utils.JwtUtil;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.github.service.ArticleService;
+import com.github.utils.ThreadLocalUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -19,6 +18,23 @@ import java.util.Map;
 @RestController
 @RequestMapping("/article")
 public class ArticleController {
+
+    private ArticleService articleService;
+
+    @Autowired
+    public ArticleController(ArticleService articleService){
+        this.articleService = articleService;
+    }
+
+    @PostMapping("/add")
+    public Result add(@RequestBody @Validated Article article){
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer userId = (Integer) claims.get("id");
+        article.setCreateUser(userId);
+
+        articleService.add(article);
+        return Result.success();
+    }
 
     @GetMapping("/list")
     public Result<String> list(){
