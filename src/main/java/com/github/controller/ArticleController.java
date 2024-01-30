@@ -66,4 +66,10 @@ public class ArticleController {
         articleService.update(article);
         return Result.success();
     }
+
+    @DeleteMapping("/del")
+    public Result delete(@RequestParam("id")Integer id){
+        articleService.delete(id);
+        return Result.success();
+    }
 }

@@ -2,6 +2,7 @@ package com.github.controller;
 
 import com.github.pojo.Category;
 import com.github.pojo.Result;
+import com.github.service.ArticleService;
 import com.github.service.CategoryService;
 import com.github.service.impl.CategoryServiceImpl;
 import com.github.utils.ThreadLocalUtil;
@@ -23,11 +24,14 @@ import java.util.Map;
 @RequestMapping("/category")
 public class CategoryController {
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
+    private final ArticleService articleService;
 
     @Autowired
-    public CategoryController(CategoryServiceImpl categoryService){
+    public CategoryController(CategoryServiceImpl categoryService,
+                              ArticleService articleService){
         this.categoryService = categoryService;
+        this.articleService = articleService;
     }
 
     @PostMapping("/add")
@@ -67,6 +71,8 @@ public class CategoryController {
 
     @DeleteMapping("/del")
     public Result delete(@RequestParam("id") Integer id){
+        //先删除相关分类的文章
+        articleService.deleteByCategoryId(id);
         categoryService.delete(id);
         return Result.success();
     }
