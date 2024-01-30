@@ -5,6 +5,7 @@ import com.github.pojo.Article;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -27,4 +28,7 @@ public interface ArticleMapper {
 
     @Select("select * from article where id = #{id}")
     Article findById(@Param("id") Integer id);
+
+    @Update("update article set title = #{article.title}, content = #{article.content}, cover_img = #{article.coverImg}, state = #{article.state}, update_time = now(), category_id = #{article.categoryId} where id = #{article.id}")
+    void update(@Param("article") Article article);
 }

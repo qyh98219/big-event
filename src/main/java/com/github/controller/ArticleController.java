@@ -60,4 +60,10 @@ public class ArticleController {
         Article article = articleService.findById(id);
         return Result.success(article);
     }
+
+    @PutMapping("/update")
+    public Result update(@RequestBody @Validated(Article.UpdateGroup.class) Article article){
+        articleService.update(article);
+        return Result.success();
+    }
 }

@@ -18,4 +18,6 @@ public interface ArticleService {
                    Integer userId);
 
     Article findById(Integer id);
+
+    void update(Article article);
 }
