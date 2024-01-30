@@ -6,6 +6,8 @@ import com.github.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @ClassName ArticleServiceImpl
  * @Description 文章业务类
@@ -27,5 +29,20 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public void add(Article article) {
         articleMapper.add(article);
+    }
+
+    @Override
+    public List<Article> listByPage(Integer pageNum, Integer pageSize, Integer categoryId, String state, Integer userId) {
+        return articleMapper.listByPage(pageNum, pageSize,categoryId, state,userId);
+    }
+
+    @Override
+    public Integer count(Integer categoryId, String state, Integer userId) {
+        return articleMapper.count(categoryId, state, userId);
+    }
+
+    @Override
+    public Article findById(Integer id) {
+        return articleMapper.findById(id);
     }
 }

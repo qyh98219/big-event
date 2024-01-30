@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +39,25 @@ public class ArticleController {
     }
 
     @GetMapping("/list")
-    public Result<String> list(){
-        return Result.success("所有文章数据");
+    public Result<Map<String, Object>> list(@RequestParam("pageNum")Integer pageNum,
+                               @RequestParam("pageSize")Integer pageSize,
+                               @RequestParam(name = "categoryId", required = false) Integer categoryId,
+                               @RequestParam(name = "state", required = false) String state){
+
+        Map<String, Object> claims = ThreadLocalUtil.get();
+        Integer userId = (Integer) claims.get("id");
+        Integer offset = (pageNum - 1) * pageSize;
+        Integer count = articleService.count(categoryId, state, userId);
+        List<Article> articles = articleService.listByPage(offset, pageSize, categoryId,state, userId);
+        Map<String, Object> resultMap = new HashMap<>(2);
+        resultMap.put("total", count);
+        resultMap.put("items", articles);
+        return Result.success(resultMap);
+    }
+
+    @GetMapping("/detail")
+    public Result<Article> detail(@RequestParam("id") Integer id){
+        Article article = articleService.findById(id);
+        return Result.success(article);
     }
 }
